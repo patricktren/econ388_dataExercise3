@@ -1,0 +1,1238 @@
+-------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:/Users/patri/Documents/Econ_388/DataExercise3/DataExercise3.log
+  log type:  text
+ opened on:   9 Dec 2024, 12:23:17
+
+. 
+. cd C:/Users/patri/Documents/Econ_388/DataExercise3
+C:\Users\patri\Documents\Econ_388\DataExercise3
+
+. 
+. * install mdesc to see where data is missing
+. ssc install mdesc
+checking mdesc consistency and verifying not already installed...
+all files already exist and are up to date.
+
+. 
+. * get data on whether there was a recession in the US that year or not
+. import delimited JHDUSRGDPBR.csv, clear
+(encoding automatically selected: ISO-8859-2)
+(2 vars, 227 obs)
+
+. gen date2 = date(date, "YMD")
+
+. format date2 %td
+
+. gen year = year(date2)
+
+. collapse (mean) avg_rec = jhdusrgdpbr , by(year)
+
+. gen recession = 0
+
+. replace recession = 1 if avg_rec > 0
+(17 real changes made)
+
+. 
+. save recession_data.dta, replace
+file recession_data.dta saved
+
+. 
+. 
+. * Basic Tasks
+. * 1.
+. use chat.dta, clear
+
+. 
+. rename country_name country
+
+. 
+. merge 1:1 country year using pwt1001.dta
+(variable country was str32, now str34 to accommodate using data's values)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                        39,169
+        from master                    34,029  (_merge==1)
+        from using                      5,140  (_merge==2)
+
+    Matched                             7,670  (_merge==3)
+    -----------------------------------------
+
+. 
+. drop if _merge == 3
+(7,670 observations deleted)
+
+. 
+. levelsof country, local(countries)
+`"Afghanistan"' `"Albania"' `"Algeria"' `"Angola"' `"Anguilla"' `"Antigua and Barbuda"' `"A
+> rgentina"' `"Armenia"' `"Aruba"' `"Australia"' `"Austria"' `"Azerbaijan"' `"Bahamas"' `"B
+> ahrain"' `"Bangladesh"' `"Barbados"' `"Belarus"' `"Belgium"' `"Belize"' `"Benin"' `"Bermu
+> da"' `"Bhutan"' `"Bolivia"' `"Bolivia (Plurinational State of)"' `"Bosnia and Herzegovina
+> "' `"Bosnia-Herzegovina"' `"Botswana"' `"Brazil"' `"British Virgin Islands"' `"Brunei Dar
+> ussalam"' `"Bulgaria"' `"Burkina Faso"' `"Burma"' `"Burundi"' `"Cabo Verde"' `"Cambodia"'
+>  `"Cameroon"' `"Canada"' `"Cayman Islands"' `"Central African Republic"' `"Chad"' `"Chile
+> "' `"China"' `"China, Hong Kong SAR"' `"China, Macao SAR"' `"Colombia"' `"Comoros"' `"Con
+> go"' `"Costa Rica"' `"Croatia"' `"Cuba"' `"Curaçao"' `"Cyprus"' `"Czech Republic"' `"Czec
+> hoslovakia"' `"Côte d'Ivoire"' `"D.R. of the Congo"' `"Democratic Republic of the Congo"'
+>  `"Denmark"' `"Djibouti"' `"Dominica"' `"Dominican Republic"' `"Ecuador"' `"Egypt"' `"El 
+> Salvador"' `"Equatorial Guinea"' `"Eritrea"' `"Estonia"' `"Eswatini"' `"Ethiopia"' `"Fiji
+> "' `"Finland"' `"France"' `"French Guiana"' `"Gabon"' `"Gambia"' `"Georgia"' `"Germany"' 
+> `"Ghana"' `"Greece"' `"Grenada"' `"Guatemala"' `"Guinea"' `"Guinea-Bissau"' `"Guyana"' `"
+> Haiti"' `"Honduras"' `"Hong Kong"' `"Hungary"' `"Iceland"' `"India"' `"Indochina"' `"Indo
+> nesia"' `"Iran"' `"Iran (Islamic Republic of)"' `"Iraq"' `"Ireland"' `"Israel"' `"Italy"'
+>  `"Ivory Coast"' `"Jamaica"' `"Japan"' `"Jordan"' `"Kazakhstan"' `"Kenya"' `"Kuwait"' `"K
+> yrgyzstan"' `"Lao People's DR"' `"Laos"' `"Latvia"' `"Lebanon"' `"Lesotho"' `"Liberia"' `
+> "Libya"' `"Lithuania"' `"Luxembourg"' `"Macedonia"' `"Madagascar"' `"Malawi"' `"Malaysia"
+> ' `"Maldives"' `"Mali"' `"Malta"' `"Mauritania"' `"Mauritius"' `"Mexico"' `"Moldova"' `"M
+> ongolia"' `"Montenegro"' `"Montserrat"' `"Morocco"' `"Mozambique"' `"Myanmar"' `"Namibia"
+> ' `"Nepal"' `"Netherlands"' `"New Zealand"' `"Nicaragua"' `"Niger"' `"Nigeria"' `"North M
+> acedonia"' `"North Vietnam"' `"Norway"' `"Oman"' `"Pakistan"' `"Panama"' `"Papua New Guin
+> ea"' `"Paraguay"' `"Peru"' `"Philippines"' `"Poland"' `"Portugal"' `"Qatar"' `"Republic o
+> f Korea"' `"Republic of Moldova"' `"Republic of the Congo"' `"Romania"' `"Russia"' `"Russ
+> ian Federation"' `"Rwanda"' `"Saint Kitts and Nevis"' `"Saint Lucia"' `"Sao Tome and Prin
+> cipe"' `"Saudi Arabia"' `"Senegal"' `"Serbia"' `"Seychelles"' `"Sierra Leone"' `"Singapor
+> e"' `"Sint Maarten (Dutch part)"' `"Slovak Republic"' `"Slovakia"' `"Slovenia"' `"Somalia
+> "' `"South Africa"' `"South Korea"' `"South Vietnam"' `"South Yemen"' `"Spain"' `"Sri Lan
+> ka"' `"St. Vincent and the Grenadines"' `"State of Palestine"' `"Sudan"' `"Suriname"' `"S
+> waziland"' `"Sweden"' `"Switzerland"' `"Syria"' `"Syrian Arab Republic"' `"Taiwan"' `"Taj
+> ikistan"' `"Tanzania"' `"Thailand"' `"Togo"' `"Trinidad and Tobago"' `"Tunisia"' `"Turkey
+> "' `"Turkmenistan"' `"Turks and Caicos Islands"' `"U.R. of Tanzania: Mainland"' `"Uganda"
+> ' `"Ukraine"' `"United Arab Emirates"' `"United Kingdom"' `"United States"' `"Uruguay"' `
+> "Uzbekistan"' `"Venezuala"' `"Venezuela (Bolivarian Republic of)"' `"Viet Nam"' `"Vietnam
+> "' `"Yemen"' `"Zambia"' `"Zimbabwe"'
+
+. foreach c of local countries {
+  2.         display "`c'"
+  3. }
+Afghanistan
+Albania
+Algeria
+Angola
+Anguilla
+Antigua and Barbuda
+Argentina
+Armenia
+Aruba
+Australia
+Austria
+Azerbaijan
+Bahamas
+Bahrain
+Bangladesh
+Barbados
+Belarus
+Belgium
+Belize
+Benin
+Bermuda
+Bhutan
+Bolivia
+Bolivia (Plurinational State of)
+Bosnia and Herzegovina
+Bosnia-Herzegovina
+Botswana
+Brazil
+British Virgin Islands
+Brunei Darussalam
+Bulgaria
+Burkina Faso
+Burma
+Burundi
+Cabo Verde
+Cambodia
+Cameroon
+Canada
+Cayman Islands
+Central African Republic
+Chad
+Chile
+China
+China, Hong Kong SAR
+China, Macao SAR
+Colombia
+Comoros
+Congo
+Costa Rica
+Croatia
+Cuba
+Curaçao
+Cyprus
+Czech Republic
+Czechoslovakia
+Côte d'Ivoire
+D.R. of the Congo
+Democratic Republic of the Congo
+Denmark
+Djibouti
+Dominica
+Dominican Republic
+Ecuador
+Egypt
+El Salvador
+Equatorial Guinea
+Eritrea
+Estonia
+Eswatini
+Ethiopia
+Fiji
+Finland
+France
+French Guiana
+Gabon
+Gambia
+Georgia
+Germany
+Ghana
+Greece
+Grenada
+Guatemala
+Guinea
+Guinea-Bissau
+Guyana
+Haiti
+Honduras
+Hong Kong
+Hungary
+Iceland
+India
+Indochina
+Indonesia
+Iran
+Iran (Islamic Republic of)
+Iraq
+Ireland
+Israel
+Italy
+Ivory Coast
+Jamaica
+Japan
+Jordan
+Kazakhstan
+Kenya
+Kuwait
+Kyrgyzstan
+Lao People's DR
+Laos
+Latvia
+Lebanon
+Lesotho
+Liberia
+Libya
+Lithuania
+Luxembourg
+Macedonia
+Madagascar
+Malawi
+Malaysia
+Maldives
+Mali
+Malta
+Mauritania
+Mauritius
+Mexico
+Moldova
+Mongolia
+Montenegro
+Montserrat
+Morocco
+Mozambique
+Myanmar
+Namibia
+Nepal
+Netherlands
+New Zealand
+Nicaragua
+Niger
+Nigeria
+North Macedonia
+North Vietnam
+Norway
+Oman
+Pakistan
+Panama
+Papua New Guinea
+Paraguay
+Peru
+Philippines
+Poland
+Portugal
+Qatar
+Republic of Korea
+Republic of Moldova
+Republic of the Congo
+Romania
+Russia
+Russian Federation
+Rwanda
+Saint Kitts and Nevis
+Saint Lucia
+Sao Tome and Principe
+Saudi Arabia
+Senegal
+Serbia
+Seychelles
+Sierra Leone
+Singapore
+Sint Maarten (Dutch part)
+Slovak Republic
+Slovakia
+Slovenia
+Somalia
+South Africa
+South Korea
+South Vietnam
+South Yemen
+Spain
+Sri Lanka
+St. Vincent and the Grenadines
+State of Palestine
+Sudan
+Suriname
+Swaziland
+Sweden
+Switzerland
+Syria
+Syrian Arab Republic
+Taiwan
+Tajikistan
+Tanzania
+Thailand
+Togo
+Trinidad and Tobago
+Tunisia
+Turkey
+Turkmenistan
+Turks and Caicos Islands
+U.R. of Tanzania: Mainland
+Uganda
+Ukraine
+United Arab Emirates
+United Kingdom
+United States
+Uruguay
+Uzbekistan
+Venezuala
+Venezuela (Bolivarian Republic of)
+Viet Nam
+Vietnam
+Yemen
+Zambia
+Zimbabwe
+
+. 
+. * rename countries that are named differently between the two files
+. use chat.dta, clear
+
+. rename country_name country
+
+. 
+. replace country = "Bolivia" if country == "Bolivia (Plurinational State of)"
+(0 real changes made)
+
+. replace country = "Bosnia and Herzegovina" if country == "Bosnia-Herzegovina"
+(259 real changes made)
+
+. replace country = "Democratic Republic of the Congo" if country == "D.R. of the Congo"
+(0 real changes made)
+
+. replace country = "Ivory Coast" if country == "Côte d'Ivoire"
+(0 real changes made)
+
+. replace country = "Iran" if country == "Iran (Islamic Republic of)"
+(0 real changes made)
+
+. replace country = "North Macedonia" if country == "Macedonia"
+(259 real changes made)
+
+. replace country = "Moldova" if country == "Republic of Moldova"
+(0 real changes made)
+
+. replace country = "Congo" if country == "Republic of the Congo"
+(259 real changes made)
+
+. replace country = "Russia" if country == "Russian Federation"
+(0 real changes made)
+
+. replace country = "South Korea" if country == "Republic of Korea"
+(0 real changes made)
+
+. replace country = "Syria" if country == "Syrian Arab Republic"
+(0 real changes made)
+
+. replace country = "Venezuela" if country == "Venezuela (Bolivarian Republic of)"
+(0 real changes made)
+
+. replace country = "Vietnam" if country == "Viet Nam"
+(0 real changes made)
+
+. save chat_country, replace
+file chat_country.dta saved
+
+. 
+. use pwt1001.dta, clear
+
+. replace country = "Bolivia" if country == "Bolivia (Plurinational State of)"
+(70 real changes made)
+
+. replace country = "Bosnia and Herzegovina" if country == "Bosnia-Herzegovina"
+(0 real changes made)
+
+. replace country = "Democratic Republic of the Congo" if country == "D.R. of the Congo"
+(70 real changes made)
+
+. replace country = "Ivory Coast" if country == "Côte d'Ivoire"
+(70 real changes made)
+
+. replace country = "Iran" if country == "Iran (Islamic Republic of)"
+(70 real changes made)
+
+. replace country = "North Macedonia" if country == "Macedonia"
+(0 real changes made)
+
+. replace country = "Moldova" if country == "Republic of Moldova"
+(70 real changes made)
+
+. replace country = "Congo" if country == "Republic of the Congo"
+(0 real changes made)
+
+. replace country = "Russia" if country == "Russian Federation"
+(70 real changes made)
+
+. replace country = "South Korea" if country == "Republic of Korea"
+(70 real changes made)
+
+. replace country = "Syria" if country == "Syrian Arab Republic"
+(70 real changes made)
+
+. replace country = "Venezuela" if country == "Venezuela (Bolivarian Republic of)"
+(70 real changes made)
+
+. replace country = "Vietnam" if country == "Viet Nam"
+(70 real changes made)
+
+. 
+. save pwt_country, replace
+file pwt_country.dta saved
+
+. 
+. 
+. use chat_country, clear
+
+. merge 1:1 country year using pwt_country.dta
+(variable country was str32, now str34 to accommodate using data's values)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                        37,753
+        from master                    33,321  (_merge==1)
+        from using                      4,432  (_merge==2)
+
+    Matched                             8,378  (_merge==3)
+    -----------------------------------------
+
+. drop if _merge != 3
+(37,753 observations deleted)
+
+. drop _merge
+
+. 
+. drop if year < 1970 | year > 1999
+(4,118 observations deleted)
+
+. 
+. gen emp_rate = emp / pop
+(634 missing values generated)
+
+. 
+. gen rgdp_capita = rgdpna / pop
+(459 missing values generated)
+
+. * drop outliers
+. summarize rgdp_capita
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+ rgdp_capita |      3,801    12435.59     17695.9   266.8447   204345.4
+
+. gen is_outlier = (rgdp_capita < r(mean) - 3.5 * r(sd)) | (rgdp_capita > r(mean) + 3.5 * r
+> (sd))
+
+. drop if is_outlier
+(508 observations deleted)
+
+. 
+. destring ship_all, replace
+ship_all: all characters numeric; replaced as int
+(2499 missing values generated)
+
+. destring railline, replace
+railline: all characters numeric; replaced as long
+(1270 missing values generated)
+
+. destring ship_steammotor, replace
+ship_steammotor: all characters numeric; replaced as int
+(2760 missing values generated)
+
+. destring shipton_all, replace
+shipton_all: all characters numeric; replaced as long
+(2453 missing values generated)
+
+. destring shipton_steammotor, replace
+shipton_steammotor: all characters numeric; replaced as long
+(2734 missing values generated)
+
+. 
+. * aggregate crude steel (the data is currently split into different methods of steel prod
+> uction that were used over time)
+. gen steel_crude = 0
+
+. replace steel_crude = steel_crude + steel_acidbess if !missing(steel_acidbess)
+(8 real changes made)
+
+. replace steel_crude = steel_crude + steel_basicbess if !missing(steel_basicbess)
+(21 real changes made)
+
+. replace steel_crude = steel_crude + steel_bof if !missing(steel_bof)
+(1,151 real changes made)
+
+. replace steel_crude = steel_crude + steel_eaf if !missing(steel_eaf)
+(1,671 real changes made)
+
+. replace steel_crude = steel_crude + steel_ohf if !missing(steel_ohf)
+(621 real changes made)
+
+. replace steel_crude = steel_crude + steel_other if !missing(steel_other)
+(11 real changes made)
+
+. replace steel_crude = . if steel_crude == 0
+(1,990 real changes made, 1,990 to missing)
+
+. 
+. * aggregate beds for patients
+. gen bed = 0
+
+. replace bed = bed + bed_acute if !missing(bed_acute)
+(569 real changes made)
+
+. replace bed = bed + bed_hosp if !missing(bed_hosp)
+(1,094 real changes made)
+
+. replace bed = bed + bed_longterm if !missing(bed_longterm)
+(329 real changes made)
+
+. replace bed = . if bed == 0
+(2,354 real changes made, 2,354 to missing)
+
+. 
+. 
+. * see what variables are missing the most/least data
+. mdesc
+
+    Variable    |     Missing          Total     Percent Missing
+----------------+-----------------------------------------------
+        country |           0          3,752           0.00
+           year |           0          3,752           0.00
+   ag_harvester |         986          3,752          26.28
+   ag_milking~e |       2,513          3,752          66.98
+     ag_tractor |         119          3,752           3.17
+            atm |       3,499          3,752          93.26
+    aviationpkm |       1,678          3,752          44.72
+    aviationtkm |       1,913          3,752          50.99
+      bed_acute |       3,183          3,752          84.83
+       bed_hosp |       2,658          3,752          70.84
+   bed_longterm |       3,423          3,752          91.23
+        cabletv |       2,657          3,752          70.82
+      cellphone |         674          3,752          17.96
+         cheque |       3,480          3,752          92.75
+       computer |       2,788          3,752          74.31
+    creditdebit |       3,499          3,752          93.26
+            eft |       3,508          3,752          93.50
+       elecprod |         416          3,752          11.09
+     fert_total |         211          3,752           5.62
+   internetuser |       2,814          3,752          75.00
+   irrigateda~a |         275          3,752           7.33
+   kidney_dia~t |       3,107          3,752          82.81
+   kidney_hom~t |       3,188          3,752          84.97
+      loom_auto |       3,087          3,752          82.28
+     loom_total |       3,087          3,752          82.28
+           mail |       2,517          3,752          67.08
+   med_catsca~r |       3,471          3,752          92.51
+   med_lithot~r |       3,582          3,752          95.47
+   med_mammog~h |       3,648          3,752          97.23
+    med_mriunit |       3,528          3,752          94.03
+   med_radiat~p |       3,518          3,752          93.76
+      newspaper |         284          3,752           7.57
+   pctdaysur~ct |       3,705          3,752          98.75
+   p~_cholecyst |       3,706          3,752          98.77
+   pctdaysurg~a |       3,703          3,752          98.69
+   p~pcholecyst |       3,718          3,752          99.09
+   pctdaysurg~l |       3,704          3,752          98.72
+   pctdaysurg~n |       3,706          3,752          98.77
+   pcthomedia~s |       3,227          3,752          86.01
+   pctimmuniz~t |       1,423          3,752          37.93
+   pctimmuniz~s |       1,477          3,752          39.37
+   pctirrigated |         275          3,752           7.33
+    pctmvbyarea |       3,291          3,752          87.71
+     pest_total |       3,073          3,752          81.90
+            pos |       3,513          3,752          93.63
+          radio |          91          3,752           2.43
+       railline |       1,270          3,752          33.85
+          railp |       2,183          3,752          58.18
+        railpkm |       2,037          3,752          54.29
+          railt |       2,105          3,752          56.10
+        railtkm |       1,811          3,752          48.27
+       ship_all |       2,499          3,752          66.60
+     ship_motor |       3,647          3,752          97.20
+      ship_sail |       3,676          3,752          97.97
+     ship_steam |       3,599          3,752          95.92
+   ship_steam~r |       2,760          3,752          73.56
+    shipton_all |       2,453          3,752          65.38
+   shipton_mo~r |       3,637          3,752          96.93
+   shipton_sail |       3,678          3,752          98.03
+   shipton_st~m |       3,604          3,752          96.06
+   shipton_st~r |       2,734          3,752          72.87
+   spindle_mule |       3,752          3,752         100.00
+   spindle_ring |       3,752          3,752         100.00
+   steel_acid~s |       3,744          3,752          99.79
+   steel_basi~s |       3,731          3,752          99.44
+      steel_bof |       2,601          3,752          69.32
+      steel_eaf |       2,081          3,752          55.46
+      steel_ohf |       3,131          3,752          83.45
+    steel_other |       3,741          3,752          99.71
+   steel_stai~s |       3,569          3,752          95.12
+   surg_appen~y |       3,656          3,752          97.44
+   surg_breas~v |       3,709          3,752          98.85
+   surg_cardc~h |       3,657          3,752          97.47
+   surg_catar~t |       3,681          3,752          98.11
+   surg_chole~t |       3,681          3,752          98.11
+   surg_corby~s |       3,592          3,752          95.74
+   surg_corin~n |       3,617          3,752          96.40
+   surg_corst~t |       3,723          3,752          99.23
+   surg_csect~n |       3,618          3,752          96.43
+    surg_hernia |       3,676          3,752          97.97
+   surg_hipre~e |       3,653          3,752          97.36
+   surg_hyste~y |       3,659          3,752          97.52
+   surg_kneer~e |       3,685          3,752          98.21
+   surg_lapch~t |       3,712          3,752          98.93
+   surg_maste~y |       3,669          3,752          97.79
+   surg_pacem~r |       3,699          3,752          98.59
+   surg_~etrans |       3,679          3,752          98.05
+   surg_~xtrans |       3,694          3,752          98.45
+    surg_tonsil |       3,689          3,752          98.32
+   surg_varic~n |       3,699          3,752          98.59
+       telegram |       2,573          3,752          68.58
+      telephone |         991          3,752          26.41
+   transplant~w |       3,474          3,752          92.59
+   transplant~t |       3,457          3,752          92.14
+   transplant~y |       3,034          3,752          80.86
+   transplant~r |       3,414          3,752          90.99
+   transplant~g |       3,549          3,752          94.59
+             tv |         309          3,752           8.24
+   txtlmat_ar~f |       3,181          3,752          84.78
+   txtlmat_ot~w |       3,517          3,752          93.74
+   txtlmat_sy~h |       3,184          3,752          84.86
+   txtlmat_to~w |       3,093          3,752          82.44
+    vehicle_car |         903          3,752          24.07
+    vehicle_com |       1,253          3,752          33.40
+    visitorbeds |       1,686          3,752          44.94
+   visitorrooms |       1,559          3,752          41.55
+   xlpopulation |         171          3,752           4.56
+      xlrealgdp |         418          3,752          11.14
+   pctivprime~l |       2,875          3,752          76.63
+   pctivsecen~l |       2,875          3,752          76.63
+   pctivpriva~v |       1,892          3,752          50.43
+   pctivpubli~v |       1,782          3,752          47.49
+   pctivliter~y |       2,196          3,752          58.53
+    countrycode |           0          3,752           0.00
+   currency_u~t |           0          3,752           0.00
+          rgdpe |           0          3,752           0.00
+          rgdpo |           0          3,752           0.00
+            pop |           0          3,752           0.00
+            emp |         175          3,752           4.66
+            avh |       2,323          3,752          61.91
+             hc |         290          3,752           7.73
+           ccon |           0          3,752           0.00
+            cda |           0          3,752           0.00
+          cgdpe |           0          3,752           0.00
+          cgdpo |           0          3,752           0.00
+             cn |          30          3,752           0.80
+             ck |         967          3,752          25.77
+           ctfp |       1,131          3,752          30.14
+          cwtfp |       1,131          3,752          30.14
+         rgdpna |           0          3,752           0.00
+         rconna |           0          3,752           0.00
+          rdana |           0          3,752           0.00
+           rnna |          30          3,752           0.80
+           rkna |         967          3,752          25.77
+         rtfpna |       1,131          3,752          30.14
+        rwtfpna |       1,131          3,752          30.14
+          labsh |         851          3,752          22.68
+            irr |         851          3,752          22.68
+          delta |          30          3,752           0.80
+             xr |           0          3,752           0.00
+         pl_con |           0          3,752           0.00
+          pl_da |           0          3,752           0.00
+        pl_gdpo |           0          3,752           0.00
+          i_cig |           0          3,752           0.00
+           i_xm |           0          3,752           0.00
+           i_xr |           0          3,752           0.00
+      i_outlier |           0          3,752           0.00
+          i_irr |         851          3,752          22.68
+        cor_exp |       3,497          3,752          93.20
+        statcap |       3,651          3,752          97.31
+          csh_c |           0          3,752           0.00
+          csh_i |           0          3,752           0.00
+          csh_g |           0          3,752           0.00
+          csh_x |           0          3,752           0.00
+          csh_m |           0          3,752           0.00
+          csh_r |           0          3,752           0.00
+           pl_c |           0          3,752           0.00
+           pl_i |           0          3,752           0.00
+           pl_g |           0          3,752           0.00
+           pl_x |           0          3,752           0.00
+           pl_m |           0          3,752           0.00
+           pl_n |          30          3,752           0.80
+           pl_k |         967          3,752          25.77
+       emp_rate |         175          3,752           4.66
+    rgdp_capita |           0          3,752           0.00
+     is_outlier |           0          3,752           0.00
+    steel_crude |       1,990          3,752          53.04
+            bed |       2,354          3,752          62.74
+----------------+-----------------------------------------------
+
+. 
+. * narrow down variables to what we want to look at
+. keep country year pop emp_rate delta xr rgdp_capita steel_crude cellphone ship_all elecpr
+> od ag_tractor bed visitorrooms
+
+. 
+. 
+. reshape wide pop emp_rate delta xr rgdp_capita steel_crude cellphone ship_all elecprod ag
+> _tractor bed visitorrooms, i(country) j(year)
+(j = 1970 1971 1972 1973 1974 1975 1976 1977 1978 1979 1980 1981 1982 1983 1984 1985 1986 1
+> 987 1988 1989 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999)
+
+Data                               Long   ->   Wide
+-----------------------------------------------------------------------------
+Number of observations            3,752   ->   141         
+Number of variables                  14   ->   361         
+j variable (30 values)             year   ->   (dropped)
+xij variables:
+                                    pop   ->   pop1970 pop1971 ... pop1999
+                               emp_rate   ->   emp_rate1970 emp_rate1971 ... emp_rate1999
+                                  delta   ->   delta1970 delta1971 ... delta1999
+                                     xr   ->   xr1970 xr1971 ... xr1999
+                            rgdp_capita   ->   rgdp_capita1970 rgdp_capita1971 ... rgdp_cap
+> ita1999
+                            steel_crude   ->   steel_crude1970 steel_crude1971 ... steel_cr
+> ude1999
+                              cellphone   ->   cellphone1970 cellphone1971 ... cellphone199
+> 9
+                               ship_all   ->   ship_all1970 ship_all1971 ... ship_all1999
+                               elecprod   ->   elecprod1970 elecprod1971 ... elecprod1999
+                             ag_tractor   ->   ag_tractor1970 ag_tractor1971 ... ag_tractor
+> 1999
+                                    bed   ->   bed1970 bed1971 ... bed1999
+                           visitorrooms   ->   visitorrooms1970 visitorrooms1971 ... visito
+> rrooms1999
+-----------------------------------------------------------------------------
+
+. 
+. forvalues i=1970/1998 {
+  2.         local j=`i'+1
+  3.         generate rgdp_capita_growth`i'=((rgdp_capita`j'/rgdp_capita`i')-1)*100
+  4.         generate steel_crude_growth`i'=((steel_crude`j'/steel_crude`i')-1)*100
+  5.         generate cellphone_growth`i'=((cellphone`j'/cellphone`i')-1)*100
+  6.         generate ship_all_growth`i'=((ship_all`j'/ship_all`i')-1)*100
+  7.         generate elecprod_growth`i'=((elecprod`j'/elecprod`i')-1)*100
+  8.         generate ag_tractor_growth`i'=((ag_tractor`j'/ag_tractor`i')-1)*100
+  9.         generate bed_growth`i'=((bed`j'/bed`i')-1)*100
+ 10.         generate visitorrooms_growth`i'=((visitorrooms`j'/visitorrooms`i')-1)*100
+ 11. 
+. }
+(24 missing values generated)
+(100 missing values generated)
+(141 missing values generated)
+(85 missing values generated)
+(32 missing values generated)
+(26 missing values generated)
+(132 missing values generated)
+(141 missing values generated)
+(24 missing values generated)
+(100 missing values generated)
+(141 missing values generated)
+(85 missing values generated)
+(29 missing values generated)
+(26 missing values generated)
+(132 missing values generated)
+(141 missing values generated)
+(25 missing values generated)
+(99 missing values generated)
+(141 missing values generated)
+(86 missing values generated)
+(30 missing values generated)
+(27 missing values generated)
+(131 missing values generated)
+(141 missing values generated)
+(25 missing values generated)
+(98 missing values generated)
+(141 missing values generated)
+(86 missing values generated)
+(30 missing values generated)
+(27 missing values generated)
+(130 missing values generated)
+(141 missing values generated)
+(25 missing values generated)
+(87 missing values generated)
+(141 missing values generated)
+(87 missing values generated)
+(30 missing values generated)
+(27 missing values generated)
+(128 missing values generated)
+(141 missing values generated)
+(25 missing values generated)
+(87 missing values generated)
+(141 missing values generated)
+(87 missing values generated)
+(30 missing values generated)
+(27 missing values generated)
+(126 missing values generated)
+(141 missing values generated)
+(25 missing values generated)
+(87 missing values generated)
+(141 missing values generated)
+(89 missing values generated)
+(30 missing values generated)
+(27 missing values generated)
+(127 missing values generated)
+(141 missing values generated)
+(25 missing values generated)
+(87 missing values generated)
+(141 missing values generated)
+(89 missing values generated)
+(30 missing values generated)
+(27 missing values generated)
+(126 missing values generated)
+(91 missing values generated)
+(25 missing values generated)
+(87 missing values generated)
+(141 missing values generated)
+(88 missing values generated)
+(30 missing values generated)
+(27 missing values generated)
+(126 missing values generated)
+(79 missing values generated)
+(25 missing values generated)
+(86 missing values generated)
+(141 missing values generated)
+(89 missing values generated)
+(30 missing values generated)
+(27 missing values generated)
+(125 missing values generated)
+(49 missing values generated)
+(24 missing values generated)
+(86 missing values generated)
+(140 missing values generated)
+(88 missing values generated)
+(29 missing values generated)
+(26 missing values generated)
+(100 missing values generated)
+(47 missing values generated)
+(24 missing values generated)
+(86 missing values generated)
+(137 missing values generated)
+(87 missing values generated)
+(29 missing values generated)
+(26 missing values generated)
+(117 missing values generated)
+(48 missing values generated)
+(23 missing values generated)
+(86 missing values generated)
+(136 missing values generated)
+(86 missing values generated)
+(28 missing values generated)
+(25 missing values generated)
+(117 missing values generated)
+(49 missing values generated)
+(23 missing values generated)
+(85 missing values generated)
+(136 missing values generated)
+(86 missing values generated)
+(29 missing values generated)
+(25 missing values generated)
+(117 missing values generated)
+(49 missing values generated)
+(23 missing values generated)
+(85 missing values generated)
+(134 missing values generated)
+(86 missing values generated)
+(29 missing values generated)
+(25 missing values generated)
+(116 missing values generated)
+(56 missing values generated)
+(23 missing values generated)
+(85 missing values generated)
+(125 missing values generated)
+(86 missing values generated)
+(28 missing values generated)
+(25 missing values generated)
+(112 missing values generated)
+(56 missing values generated)
+(23 missing values generated)
+(85 missing values generated)
+(116 missing values generated)
+(88 missing values generated)
+(28 missing values generated)
+(25 missing values generated)
+(113 missing values generated)
+(56 missing values generated)
+(23 missing values generated)
+(84 missing values generated)
+(109 missing values generated)
+(88 missing values generated)
+(28 missing values generated)
+(25 missing values generated)
+(111 missing values generated)
+(57 missing values generated)
+(23 missing values generated)
+(84 missing values generated)
+(107 missing values generated)
+(90 missing values generated)
+(30 missing values generated)
+(25 missing values generated)
+(110 missing values generated)
+(61 missing values generated)
+(22 missing values generated)
+(84 missing values generated)
+(103 missing values generated)
+(90 missing values generated)
+(30 missing values generated)
+(24 missing values generated)
+(89 missing values generated)
+(52 missing values generated)
+(141 missing values generated)
+(90 missing values generated)
+(90 missing values generated)
+(28 missing values generated)
+(23 missing values generated)
+(76 missing values generated)
+(49 missing values generated)
+(141 missing values generated)
+(84 missing values generated)
+(100 missing values generated)
+(27 missing values generated)
+(23 missing values generated)
+(78 missing values generated)
+(56 missing values generated)
+(59 missing values generated)
+(70 missing values generated)
+(131 missing values generated)
+(9 missing values generated)
+(5 missing values generated)
+(79 missing values generated)
+(44 missing values generated)
+(60 missing values generated)
+(55 missing values generated)
+(137 missing values generated)
+(36 missing values generated)
+(4 missing values generated)
+(81 missing values generated)
+(45 missing values generated)
+(61 missing values generated)
+(47 missing values generated)
+(137 missing values generated)
+(35 missing values generated)
+(4 missing values generated)
+(85 missing values generated)
+(39 missing values generated)
+(61 missing values generated)
+(36 missing values generated)
+(138 missing values generated)
+(35 missing values generated)
+(4 missing values generated)
+(84 missing values generated)
+(33 missing values generated)
+(60 missing values generated)
+(22 missing values generated)
+(139 missing values generated)
+(35 missing values generated)
+(4 missing values generated)
+(84 missing values generated)
+(31 missing values generated)
+(60 missing values generated)
+(17 missing values generated)
+(139 missing values generated)
+(40 missing values generated)
+(4 missing values generated)
+(89 missing values generated)
+(30 missing values generated)
+(62 missing values generated)
+(12 missing values generated)
+(141 missing values generated)
+(59 missing values generated)
+(4 missing values generated)
+(91 missing values generated)
+(33 missing values generated)
+
+. 
+. 
+. 
+. reshape long pop emp_rate delta xr rgdp_capita_growth steel_crude_growth cellphone_growth
+>  ship_all_growth elecprod_growth ag_tractor_growth bed_growth visitorrooms_growth rgdp_ca
+> pita steel_crude cellphone ship_all elecprod ag_tractor bed visitorrooms, i(country) j(ye
+> ar)
+(j = 1970 1971 1972 1973 1974 1975 1976 1977 1978 1979 1980 1981 1982 1983 1984 1985 1986 1
+> 987 1988 1989 1990 1991 1992 1993 1994 1995 1996 1997 1998 1999)
+(variable rgdp_capita_growth1999 not found)
+(variable steel_crude_growth1999 not found)
+(variable cellphone_growth1999 not found)
+(variable ship_all_growth1999 not found)
+(variable elecprod_growth1999 not found)
+(variable ag_tractor_growth1999 not found)
+(variable bed_growth1999 not found)
+(variable visitorrooms_growth1999 not found)
+
+Data                               Wide   ->   Long
+-----------------------------------------------------------------------------
+Number of observations              141   ->   4,230       
+Number of variables                 593   ->   22          
+j variable (30 values)                    ->   year
+xij variables:
+            pop1970 pop1971 ... pop1999   ->   pop
+emp_rate1970 emp_rate1971 ... emp_rate1999->   emp_rate
+      delta1970 delta1971 ... delta1999   ->   delta
+               xr1970 xr1971 ... xr1999   ->   xr
+rgdp_capita_growth1970 rgdp_capita_growth1971 ... rgdp_capita_growth1999->rgdp_capita_growt
+> h
+steel_crude_growth1970 steel_crude_growth1971 ... steel_crude_growth1999->steel_crude_growt
+> h
+cellphone_growth1970 cellphone_growth1971 ... cellphone_growth1999->cellphone_growth
+ship_all_growth1970 ship_all_growth1971 ... ship_all_growth1999->ship_all_growth
+elecprod_growth1970 elecprod_growth1971 ... elecprod_growth1999->elecprod_growth
+ag_tractor_growth1970 ag_tractor_growth1971 ... ag_tractor_growth1999->ag_tractor_growth
+bed_growth1970 bed_growth1971 ... bed_growth1999->bed_growth
+visitorrooms_growth1970 visitorrooms_growth1971 ... visitorrooms_growth1999->visitorrooms_g
+> rowth
+rgdp_capita1970 rgdp_capita1971 ... rgdp_capita1999->rgdp_capita
+steel_crude1970 steel_crude1971 ... steel_crude1999->steel_crude
+cellphone1970 cellphone1971 ... cellphone1999->cellphone
+ship_all1970 ship_all1971 ... ship_all1999->   ship_all
+elecprod1970 elecprod1971 ... elecprod1999->   elecprod
+ag_tractor1970 ag_tractor1971 ... ag_tractor1999->ag_tractor
+            bed1970 bed1971 ... bed1999   ->   bed
+visitorrooms1970 visitorrooms1971 ... visitorrooms1999->visitorrooms
+-----------------------------------------------------------------------------
+
+. 
+. * merge the recession data
+. merge m:1 year using recession_data
+(variable year was int, now float to accommodate using data's values)
+
+    Result                      Number of obs
+    -----------------------------------------
+    Not matched                            28
+        from master                         0  (_merge==1)
+        from using                         28  (_merge==2)
+
+    Matched                             4,230  (_merge==3)
+    -----------------------------------------
+
+. gen recession_xr_inter = recession * xr
+(506 missing values generated)
+
+. drop if _merge != 3
+(28 observations deleted)
+
+. drop _merge
+
+. drop avg_rec
+
+. 
+. 
+. 
+. * 2.
+. * how tech affects rgdp_capita_growth
+. encode country, gen(country_id)
+
+. xtset country_id year
+
+Panel variable: country_id (strongly balanced)
+ Time variable: year, 1970 to 1999
+         Delta: 1 unit
+
+. prais rgdp_capita_growth emp_rate delta xr recession_xr_inter steel_crude_growth cellphon
+> e_growth ship_all_growth elecprod_growth ag_tractor_growth bed_growth visitorrooms_growth
+> , robust
+
+Number of gaps in sample = 21   (gap count includes panel changes)
+note: computations for rho restarted at each gap.
+
+Iteration 0:  rho = 0.0000
+Iteration 1:  rho = 0.0821
+Iteration 2:  rho = 0.1090
+Iteration 3:  rho = 0.1182
+Iteration 4:  rho = 0.1213
+Iteration 5:  rho = 0.1224
+Iteration 6:  rho = 0.1228
+Iteration 7:  rho = 0.1229
+Iteration 8:  rho = 0.1230
+Iteration 9:  rho = 0.1230
+Iteration 10: rho = 0.1230
+Iteration 11: rho = 0.1230
+Iteration 12: rho = 0.1230
+
+Prais–Winsten AR(1) regression with iterated estimates
+
+Linear regression                               Number of obs     =         72
+                                                F(11, 60)         =      34.65
+                                                Prob > F          =     0.0000
+                                                R-squared         =     0.4723
+                                                Root MSE          =     1.6871
+
+-------------------------------------------------------------------------------------
+                    |             Semirobust
+ rgdp_capita_growth | Coefficient  std. err.      t    P>|t|     [95% conf. interval]
+--------------------+----------------------------------------------------------------
+           emp_rate |  -9.837707   3.355421    -2.93   0.005    -16.54955   -3.125865
+              delta |  -12.93383   17.02665    -0.76   0.450    -46.99221    21.12454
+                 xr |   .2021692   .0612545     3.30   0.002      .079642    .3246965
+ recession_xr_inter |  -.2008335   .0613244    -3.27   0.002    -.3235005   -.0781665
+ steel_crude_growth |    .052021   .0218863     2.38   0.021     .0082419    .0958001
+   cellphone_growth |   .0024201   .0009644     2.51   0.015     .0004911    .0043491
+    ship_all_growth |  -.0039343   .0298481    -0.13   0.896    -.0636394    .0557709
+    elecprod_growth |   .0607968   .0178239     3.41   0.001     .0251437      .09645
+  ag_tractor_growth |    .215054    .082538     2.61   0.012     .0499534    .3801547
+         bed_growth |   .0068358   .0025632     2.67   0.010     .0017087    .0119629
+visitorrooms_growth |  -.0809823   .0352301    -2.30   0.025    -.1514531   -.0105116
+              _cons |   6.003823   1.678933     3.58   0.001     2.645457    9.362188
+--------------------+----------------------------------------------------------------
+                rho |   .1229791
+-------------------------------------------------------------------------------------
+Durbin–Watson statistic (original)    = 1.038943
+Durbin–Watson statistic (transformed) = 1.100138
+
+. 
+. test steel_crude_growth cellphone_growth ship_all_growth elecprod_growth ag_tractor_growt
+> h bed_growth visitorrooms_growth
+
+ ( 1)  steel_crude_growth = 0
+ ( 2)  cellphone_growth = 0
+ ( 3)  ship_all_growth = 0
+ ( 4)  elecprod_growth = 0
+ ( 5)  ag_tractor_growth = 0
+ ( 6)  bed_growth = 0
+ ( 7)  visitorrooms_growth = 0
+
+       F(  7,    60) =    6.56
+            Prob > F =    0.0000
+
+. 
+. scatter rgdp_capita year, xtitle("year") ytitle("rGDP per capita")
+
+.         
+. scatter rgdp_capita_growth year
+
+. 
+. gen isDeveloped = 0
+
+. replace isDeveloped = 1 if country == "France" | country == "Germany" | country == "Italy
+> " | country == "Japan" | country == "United Kingdom" | country == "United States"
+(180 real changes made)
+
+. 
+. save pwt_chat_BasicTasks, replace
+file pwt_chat_BasicTasks.dta saved
+
+. 
+. 
+. 
+. * 3.
+. collapse (mean) rgdp_capita_growth steel_crude_growth cellphone_growth ship_all_growth el
+> ecprod_growth ag_tractor_growth bed_growth visitorrooms_growth [aweight=pop], by(year isD
+> eveloped)
+
+. * Create the line graph with different colors for each variable
+. twoway (line steel_crude_growth year if isDeveloped == 0, lcolor(blue)) ///
+>        (line cellphone_growth year if isDeveloped == 0, lcolor(red)) ///
+>        (line ship_all_growth year if isDeveloped == 0, lcolor(green)) ///
+>            (line elecprod_growth year if isDeveloped == 0, lcolor(orange)) ///
+>            (line ag_tractor_growth year if isDeveloped == 0, lcolor(black)) ///
+>            (line bed_growth year if isDeveloped == 0, lcolor(yellow)) ///
+>            (line visitorrooms_growth year if isDeveloped == 0, lcolor(purple)), ///
+>        title("Average tech growth (undevloped)") ///
+>            xtitle("year") ///
+>            ytitle("% change") ///
+> 
+
+. twoway (line steel_crude_growth year if isDeveloped == 1, lcolor(blue)) ///
+>        (line cellphone_growth year if isDeveloped == 1, lcolor(red)) ///
+>        (line ship_all_growth year if isDeveloped == 1, lcolor(green)) ///
+>            (line elecprod_growth year if isDeveloped == 1, lcolor(orange)) ///
+>            (line ag_tractor_growth year if isDeveloped == 1, lcolor(black)) ///
+>            (line bed_growth year if isDeveloped == 1, lcolor(yellow)) ///
+>            (line visitorrooms_growth year if isDeveloped == 1, lcolor(purple)), ///
+>        title("Average tech growth (devloped)") ///
+>            xtitle("year") ///
+>            ytitle("% change") ///
+> 
+
+. use pwt_chat_BasicTasks, clear
+
+. * show summary data by isDeveloped
+. collapse (mean) rgdp_capita_growth steel_crude_growth cellphone_growth ship_all_growth el
+> ecprod_growth ag_tractor_growth bed_growth visitorrooms_growth [aweight=pop], by(year isD
+> eveloped)
+
+. by isDeveloped, sort: summ
+
+-------------------------------------------------------------------------------------------
+-> isDeveloped = 0
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+        year |         30      1984.5    8.803408       1970       1999
+ isDeveloped |         30           0           0          0          0
+rgdp_capit~h |         29    2.538169    1.268688   .0215896   4.751501
+steel_crud~h |         27     8.32866    5.953796  -2.955044   26.33198
+cellphone_~h |         19    146.8094    81.80554   18.94003   284.6241
+-------------+---------------------------------------------------------
+ship_all_g~h |         28    4.515765     5.88883  -12.19514   16.18594
+elecprod_g~h |         29    7.793971    2.242276   4.107339   14.69695
+ag_tractor~h |         29    7.193165    5.527593  -1.175063   20.38862
+  bed_growth |         29    4.828741     8.10922   -7.64461   29.37665
+visitorroo~h |         22    10.26902    5.050366   5.125153   22.85322
+
+-------------------------------------------------------------------------------------------
+-> isDeveloped = 1
+
+    Variable |        Obs        Mean    Std. dev.       Min        Max
+-------------+---------------------------------------------------------
+        year |         30      1984.5    8.803408       1970       1999
+ isDeveloped |         30           1           0          1          1
+rgdp_capit~h |         29    2.390396    1.553188  -.7324183   5.455446
+steel_crud~h |         27     .330469    7.601057  -19.75248   14.06311
+cellphone_~h |         18    84.40582    80.75229    37.3512   371.3326
+-------------+---------------------------------------------------------
+ship_all_g~h |         25    -4.18225    20.12444  -99.65714    6.22267
+elecprod_g~h |         29    3.134531    2.064687  -1.098095   7.831485
+ag_tractor~h |         29    1.665124    2.953224  -2.290229   12.39573
+  bed_growth |         29     9.90776    50.25508  -64.93306   145.3645
+visitorroo~h |         22    13.67008    53.11929  -10.58499   250.9412
+
+
+. 
+. 
+. 
+. // collapse (mean) rgdp_capita_growth steel_crude_growth cellphone_growth ship_all_growth
+>  elecprod_growth ag_tractor_growth bed_growth visitorrooms_growth [aweight=pop], by(count
+> ry)
+. 
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  C:/Users/patri/Documents/Econ_388/DataExercise3/DataExercise3.log
+  log type:  text
+ closed on:   9 Dec 2024, 12:23:30
+-------------------------------------------------------------------------------------------
